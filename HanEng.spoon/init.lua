@@ -3,6 +3,7 @@
 --- 한/영 오타 변환기 · 한영키를 안 눌러 잘못 친 텍스트를 선택 후 단축키로 제자리 변환.
 --- 순수 Lua 구현(외부 의존성 없음). 두벌식 기준, 방향 자동 감지.
 ---
+--- 만든 사람: odiowood
 --- Download: https://github.com/odiowood/hangul-oops
 
 local obj = {}
@@ -242,12 +243,115 @@ function obj:convertSelection()
     hs.timer.doAfter(0.15, function() restorePasteboard(backup) end)
 end
 
+-- ─────────────────────────────────────────────────────────────────────
+-- 단축키 관리 + 메뉴바 UI (코드 편집 없이 단축키 변경)
+-- ─────────────────────────────────────────────────────────────────────
+
+local SETTINGS_KEY = "HanEng.hotkey"       -- 저장 위치(재시작해도 유지)
+local MOD_ORDER = { "ctrl", "alt", "shift", "cmd" }
+local MOD_SYMBOL = { cmd = "⌘", shift = "⇧", ctrl = "⌃", alt = "⌥" }
+
+-- 단축키를 보기 좋은 기호로 (예: {"cmd","shift"}, ";" → "⌘⇧;")
+local function fmtHotkey(mods, key)
+    local s = ""
+    for _, m in ipairs(MOD_ORDER) do
+        if hs.fnutils.contains(mods, m) then s = s .. MOD_SYMBOL[m] end
+    end
+    local k = key
+    if k == "space" then k = "Space" elseif #k == 1 then k = k:upper() else k = k:upper() end
+    return s .. k
+end
+
+-- 프리셋 목록
+local PRESETS = {
+    { mods = { "cmd", "shift" },  key = ";" },
+    { mods = { "cmd", "shift" },  key = "\\" },
+    { mods = { "cmd" },           key = "'" },
+    { mods = { "ctrl", "alt" },   key = "space" },
+    { mods = { "ctrl", "alt" },   key = "k" },
+}
+
+-- 실제로 단축키를 (재)바인딩
+function obj:_applyHotkey(mods, key, persist)
+    if self._hotkeyObj then self._hotkeyObj:delete(); self._hotkeyObj = nil end
+    self._mods, self._key = mods, key
+    self._hotkeyObj = hs.hotkey.bind(mods, key, function() self:convertSelection() end)
+    if persist then hs.settings.set(SETTINGS_KEY, { mods = mods, key = key }) end
+    self:_refreshMenu()
+end
+
+-- 메뉴바 메뉴 갱신
+function obj:_refreshMenu()
+    if not self._menubar then return end
+    local cur = fmtHotkey(self._mods, self._key)
+    local presetItems = {}
+    for _, p in ipairs(PRESETS) do
+        local label = fmtHotkey(p.mods, p.key)
+        presetItems[#presetItems + 1] = {
+            title = label .. (label == fmtHotkey({ "cmd", "shift" }, ";") and "  (기본값)" or ""),
+            checked = (label == cur),
+            fn = function()
+                self:_applyHotkey(p.mods, p.key, true)
+                hs.alert.show("단축키 변경됨:  " .. label, 1)
+            end,
+        }
+    end
+    self._menubar:setMenu({
+        { title = "현재 단축키:  " .. cur, disabled = true },
+        { title = "-" },
+        { title = "단축키 바꾸기", menu = presetItems },
+        { title = "직접 지정 (다음에 누르는 키로)…", fn = function() self:_recordHotkey() end },
+        { title = "-" },
+        { title = "사용법 열기", fn = function() hs.execute("open https://github.com/odiowood/hangul-oops") end },
+        { title = "만든 사람: odiowood", disabled = true },
+    })
+end
+
+-- "직접 지정": 다음에 누르는 키 조합을 새 단축키로 (수식 키 1개 이상 필요)
+function obj:_recordHotkey()
+    if self._recorder then self._recorder:stop(); self._recorder = nil end
+    hs.alert.show("바꿀 단축키를 지금 누르세요…\n(⌘ ⇧ ⌃ ⌥ 중 하나 이상과 함께)", 3)
+    self._recorder = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(e)
+        local key = hs.keycodes.map[e:getKeyCode()]
+        if not key or key == "" then return true end
+        local f = e:getFlags()
+        local mods = {}
+        if f.ctrl then mods[#mods + 1] = "ctrl" end
+        if f.alt then mods[#mods + 1] = "alt" end
+        if f.shift then mods[#mods + 1] = "shift" end
+        if f.cmd then mods[#mods + 1] = "cmd" end
+        if #mods == 0 then
+            hs.alert.show("수식 키(⌘ ⇧ ⌃ ⌥)와 함께 눌러주세요", 1)
+            return true                       -- 계속 대기
+        end
+        self._recorder:stop(); self._recorder = nil
+        self:_applyHotkey(mods, key, true)
+        hs.alert.show("단축키 변경됨:  " .. fmtHotkey(mods, key), 1)
+        return true                           -- 이 입력은 삼킴
+    end)
+    self._recorder:start()
+end
+
 --- HanEng:bindHotkeys(mapping)
 --- Method
---- 단축키 지정. 예: spoon.HanEng:bindHotkeys({ convert = {{"cmd","shift"}, ";"} })
+--- 단축키 지정 + 메뉴바 아이콘 생성. 저장된 사용자 지정 단축키가 있으면 그것을 우선한다.
+--- 예: spoon.HanEng:bindHotkeys({ convert = {{"cmd","shift"}, ";"} })
 function obj:bindHotkeys(mapping)
-    local spec = { convert = hs.fnutils.partial(self.convertSelection, self) }
-    hs.spoons.bindHotkeysToSpec(spec, mapping)
+    -- 기본 단축키(설정 파일에 저장된 값이 없을 때 사용)
+    local defMods, defKey = { "cmd", "shift" }, ";"
+    if mapping and mapping.convert then
+        defMods, defKey = mapping.convert[1], mapping.convert[2]
+    end
+    if not self._menubar then
+        self._menubar = hs.menubar.new()
+        if self._menubar then self._menubar:setTitle("가A") end
+    end
+    local saved = hs.settings.get(SETTINGS_KEY)
+    if saved and saved.mods and saved.key then
+        self:_applyHotkey(saved.mods, saved.key, false)     -- 저장된 사용자 지정 우선
+    else
+        self:_applyHotkey(defMods, defKey, false)
+    end
     return self
 end
 

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>한글 Oops · 사용법</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#171a21; --line:#262b36; --tx:#e8eaed; --dim:#a2acbd;
+    --accent:#7aa2ff; --accent2:#b98bff; --good:#5fd18b; --kbd:#20242e;
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#f6f7fb; --card:#ffffff; --line:#e6e9f0; --tx:#1c2230; --dim:#5b6577;
+           --accent:#3b6cff; --accent2:#8a4bff; --good:#12a05a; --kbd:#eef1f7; }
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--tx);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard",system-ui,sans-serif;
+    line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .wrap{ max-width:760px; margin:0 auto; padding:0 22px 80px; }
+  header{ text-align:center; padding:64px 22px 40px;
+    background:radial-gradient(1200px 400px at 50% -120px, rgba(122,162,255,.18), transparent); }
+  .credit{ display:inline-block; font-size:13px; letter-spacing:.02em; color:var(--dim);
+    border:1px solid var(--line); border-radius:999px; padding:5px 14px; margin-bottom:20px; }
+  .credit b{ color:var(--accent2); }
+  h1{ font-size:44px; margin:.1em 0 .15em; letter-spacing:-.02em;
+    background:linear-gradient(90deg,var(--accent),var(--accent2)); -webkit-background-clip:text;
+    background-clip:text; color:transparent; }
+  .sub{ color:var(--dim); font-size:17px; margin:0; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:24px 26px; margin:20px 0; }
+  h2{ font-size:22px; margin:0 0 14px; display:flex; align-items:center; gap:10px; }
+  h2 .n{ font-size:15px; width:28px; height:28px; flex:0 0 28px; border-radius:8px;
+    display:grid; place-items:center; color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); }
+  p{ margin:.4em 0; }
+  .dim{ color:var(--dim); }
+  kbd{ display:inline-block; background:var(--kbd); border:1px solid var(--line);
+    border-bottom-width:2px; border-radius:7px; padding:2px 9px; font-size:14px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  table{ width:100%; border-collapse:collapse; margin:8px 0; }
+  td{ padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:middle; }
+  tr:last-child td{ border-bottom:0; }
+  .mono{ font-family:ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--dim); }
+  .arrow{ color:var(--accent); padding:0 4px; }
+  .res{ font-weight:600; color:var(--good); }
+  ol{ margin:.3em 0; padding-left:1.3em; }
+  ol li{ margin:.5em 0; }
+  .tip{ border-left:3px solid var(--accent); background:rgba(122,162,255,.08);
+    border-radius:0 10px 10px 0; padding:12px 16px; margin:14px 0; font-size:15px; }
+  code{ font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:var(--kbd);
+    padding:1px 6px; border-radius:6px; font-size:.92em; }
+  footer{ text-align:center; color:var(--dim); font-size:14px; margin-top:36px; }
+  a{ color:var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <div class="credit">만든 사람 · <b>odiowood</b></div>
+  <h1>한글 Oops</h1>
+  <p class="sub">한/영 전환키 안 누르고 잘못 친 글자, 지우지 말고 단축키 하나로 고치세요.</p>
+</header>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>이게 뭔가요?</h2>
+    <p>한영키를 깜빡하고 그냥 쳐서 <span class="mono">dkssud</span> 같은 오타가 났을 때,
+       전부 지우고 다시 칠 필요 없이 <b>그 글자를 드래그로 선택하고 단축키만 누르면</b> 제대로 고쳐줍니다.</p>
+    <table>
+      <tr><td class="mono">dkssud</td><td class="arrow">→</td><td class="res">안녕</td></tr>
+      <tr><td class="mono">dkssudgktpdy</td><td class="arrow">→</td><td class="res">안녕하세요</td></tr>
+      <tr><td class="mono">ㅗ디ㅣㅐ</td><td class="arrow">→</td><td class="res">hello</td></tr>
+      <tr><td class="mono">WkaQhd</td><td class="arrow">→</td><td class="res">짬뽕</td></tr>
+    </table>
+    <p class="dim">방향(한→영 / 영→한)은 자동으로 감지합니다. Caps Lock이 켜진 채 친 경우까지 알아서 잡아줍니다.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">1</span> Hammerspoon 설치</h2>
+    <p><a href="https://www.hammerspoon.org">hammerspoon.org</a>에서 내려받아 <b>Hammerspoon.app</b>을
+       <b>응용 프로그램</b> 폴더로 옮기고 한 번 실행하세요. (이 도구가 돌아가는 무료 엔진입니다.)</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span> 한글 Oops 설치</h2>
+    <p>이 설명서가 들어있던 폴더의 <b><code>install.command</code></b> 파일을
+       <b>우클릭 → 열기</b> 하세요. 나머지 설정은 자동으로 됩니다.</p>
+    <div class="tip">💡 macOS가 <b>“확인되지 않은 개발자”</b>라며 막으면, 더블클릭 대신
+      <b>우클릭 → 열기 → (다시) 열기</b>를 눌러주세요.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span> 손쉬운 사용 권한 켜기</h2>
+    <p>키 입력을 대신 눌러주려면 권한이 한 번 필요합니다.
+       <b>시스템 설정 → 개인정보 보호 및 보안 → 손쉬운 사용</b>에서 <b>Hammerspoon</b>을 켜주세요.</p>
+    <p class="dim">권한을 켠 뒤에는 Hammerspoon을 한 번 재시작하면 확실히 인식됩니다.</p>
+  </div>
+
+  <div class="card">
+    <h2>🖱 사용법</h2>
+    <p>아무 앱에서나 잘못 친 텍스트를 <b>드래그로 선택</b>한 뒤 → <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>;</kbd></p>
+  </div>
+
+  <div class="card">
+    <h2>⌨️ 단축키 바꾸기 (코드 편집 없이!)</h2>
+    <p>화면 <b>오른쪽 위 메뉴바</b>에 생긴 <kbd>가A</kbd> 아이콘을 클릭하세요.</p>
+    <ol>
+      <li><b>단축키 바꾸기</b> — 미리 준비된 조합 중에서 고르기</li>
+      <li><b>직접 지정 (다음에 누르는 키로)</b> — 클릭하고 원하는 키 조합을
+          (예: <kbd>⌘</kbd><kbd>⇧</kbd><kbd>H</kbd>) 그냥 누르면 바로 지정됩니다</li>
+    </ol>
+    <p class="dim">바꾼 단축키는 저장되어 컴퓨터를 껐다 켜도 그대로 유지됩니다.</p>
+  </div>
+
+  <div class="card">
+    <h2>❓ 잘 안 될 때</h2>
+    <p><b>단축키를 눌러도 반응이 없어요</b> <span class="dim">→ 3번 손쉬운 사용 권한을 켰는지, 켠 뒤 Hammerspoon을 재시작했는지 확인하세요.</span></p>
+    <p><b>단축키가 다른 기능과 겹쳐요</b> <span class="dim">→ 위 메뉴바에서 다른 조합으로 바꾸세요.</span></p>
+  </div>
+
+  <footer>
+    한글 Oops · MIT License · © 2026 <b>odiowood</b><br>
+    <a href="https://github.com/odiowood/hangul-oops">github.com/odiowood/hangul-oops</a>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -76,5 +76,10 @@ echo ""
 # 손쉬운 사용 설정 화면 열어주기
 open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility" 2>/dev/null
 
+# 설명서가 같은 폴더에 있으면 열어주기
+if [ -f "./사용법.html" ]; then
+    open "./사용법.html" 2>/dev/null
+fi
+
 read -n 1 -s -r -p "이 창은 닫으셔도 됩니다. 아무 키나 누르세요..."
 echo ""
