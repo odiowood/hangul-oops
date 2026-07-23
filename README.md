@@ -15,9 +15,9 @@
   </a>
 </p>
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/odiowood/hangul-oops?label=최신%20버전&color=success" alt="최신 버전">
   <img src="https://img.shields.io/badge/platform-macOS-lightgrey" alt="platform">
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="license">
+  <img src="https://img.shields.io/badge/의존성-없음_(순수_Lua)-success" alt="no dependencies">
 </p>
 <p align="center"><sub>버튼을 누르면 릴리스 페이지를 거치지 않고 최신 버전이 바로 내려받아집니다.</sub></p>
 
