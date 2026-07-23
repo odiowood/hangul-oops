@@ -10,7 +10,7 @@ local obj = {}
 obj.__index = obj
 
 obj.name = "HanEng"
-obj.version = "1.0"
+obj.version = "1.3"
 obj.author = "odiowood"
 obj.homepage = "https://github.com/odiowood/hangul-oops"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
@@ -178,18 +178,41 @@ local function korToEng(text)
     return table.concat(out)
 end
 
-local function hasHangul(text)
-    for _, cp in utf8.codes(text) do
-        if (cp >= 0xAC00 and cp <= 0xD7A3) or (cp >= 0x3131 and cp <= 0x3163) then
-            return true
-        end
+-- 문자 분류: 한글(ko) / 두벌식 매핑 가능한 라틴(en) / 그 외(other)
+local function classifyCp(cp)
+    if (cp >= 0xAC00 and cp <= 0xD7A3) or (cp >= 0x3131 and cp <= 0x3163) then
+        return "ko"
     end
-    return false
+    if KEY_TO_JAMO[utf8.char(cp)] then
+        return "en"
+    end
+    return "other"
 end
 
--- 방향 자동 감지 후 변환 (순수 함수 · 테스트 가능)
+-- 변환 (순수 함수 · 테스트 가능).
+-- 한글은 영타로, 영문은 한글로 — 섞여 있으면 구간별로 서로 반대로 변환한다.
+-- (숫자·공백·문장부호는 구간 경계가 되며 그대로 통과)
 function obj.convertText(text)
-    if hasHangul(text) then return korToEng(text) else return engToKor(text) end
+    local out, buf, cls = {}, {}, nil
+    local function flush()
+        if #buf == 0 then return end
+        local seg = table.concat(buf)
+        if cls == "ko" then
+            out[#out + 1] = korToEng(seg)
+        elseif cls == "en" then
+            out[#out + 1] = engToKor(seg)
+        else
+            out[#out + 1] = seg
+        end
+        buf = {}
+    end
+    for _, cp in utf8.codes(text) do
+        local c = classifyCp(cp)
+        if c ~= cls then flush(); cls = c end
+        buf[#buf + 1] = utf8.char(cp)
+    end
+    flush()
+    return table.concat(out)
 end
 
 -- ─────────────────────────────────────────────────────────────────────
