@@ -38,9 +38,12 @@
 
 ### 2. 한글 Oops 내려받기
 
-이 페이지 위쪽의 초록색 **`Code` → `Download ZIP`** 버튼으로 내려받고 압축을 풉니다.
-그 안의 **`HanEng.spoon`** 폴더를 **더블클릭**하세요. Hammerspoon이 자동으로 설치합니다.
+**[👉 최신 릴리스에서 `HanEng.spoon.zip` 내려받기](https://github.com/odiowood/hangul-oops/releases/latest)**
+
+내려받은 zip의 압축을 풀면 나오는 **`HanEng.spoon`** 폴더를 **더블클릭**하세요. Hammerspoon이 자동으로 설치합니다.
 (설치 위치: `~/.hammerspoon/Spoons/HanEng.spoon`)
+
+> 대신 이 페이지 위쪽 초록색 **`Code` → `Download ZIP`** 로 저장소 전체를 받아, 그 안의 `HanEng.spoon` 폴더를 더블클릭해도 됩니다.
 
 ### 3. 설정에 2줄 추가
 
