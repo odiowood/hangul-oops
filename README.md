@@ -9,6 +9,18 @@
 
 방향(한→영 / 영→한)은 자동으로 감지합니다. 파이썬 같은 별도 설치도 필요 없습니다.
 
+<p align="center">
+  <a href="https://github.com/odiowood/hangul-oops/releases/latest/download/hangul-oops.zip">
+    <img src="https://img.shields.io/badge/⬇_바로_다운로드-hangul--oops.zip-3b6cff?style=for-the-badge&logo=apple&logoColor=white" alt="바로 다운로드">
+  </a>
+</p>
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/odiowood/hangul-oops?label=최신%20버전&color=success" alt="최신 버전">
+  <img src="https://img.shields.io/badge/platform-macOS-lightgrey" alt="platform">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="license">
+</p>
+<p align="center"><sub>버튼을 누르면 릴리스 페이지를 거치지 않고 최신 버전이 바로 내려받아집니다.</sub></p>
+
 ---
 
 ## ✨ 이런 걸 고쳐줍니다
@@ -42,7 +54,7 @@
 
 ### 2. 한글 Oops 설치 (자동)
 
-**[👉 최신 릴리스에서 `hangul-oops.zip` 내려받기](https://github.com/odiowood/hangul-oops/releases/latest)**
+**[👉 `hangul-oops.zip` 바로 내려받기](https://github.com/odiowood/hangul-oops/releases/latest/download/hangul-oops.zip)** (클릭 즉시 다운로드)
 
 압축을 풀고 나온 폴더에서 **`install.command` 을 우클릭 → 열기**를 누르세요.
 스푼 복사와 설정을 **자동으로** 해줍니다. (init.lua를 직접 편집할 필요가 없습니다.)
