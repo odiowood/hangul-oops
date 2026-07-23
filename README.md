@@ -52,14 +52,27 @@
 [hammerspoon.org](https://www.hammerspoon.org)에서 내려받아 `Hammerspoon.app`을 **응용 프로그램** 폴더로 옮기고 실행하세요.
 (Homebrew를 쓰신다면 `brew install --cask hammerspoon`)
 
-### 2. 한글 Oops 설치 (자동)
+### 2. 한글 Oops 설치
 
-**[👉 `hangul-oops.zip` 바로 내려받기](https://github.com/odiowood/hangul-oops/releases/latest/download/hangul-oops.zip)** (클릭 즉시 다운로드)
+편한 방법을 고르세요. **터미널 방법이 가장 매끄럽습니다.**
 
-압축을 풀고 나온 폴더에서 **`install.command` 을 우클릭 → 열기**를 누르세요.
-스푼 복사와 설정을 **자동으로** 해줍니다. (init.lua를 직접 편집할 필요가 없습니다.)
+#### 방법 A. 터미널 한 줄 (권장 · 경고 없이 바로 설치)
 
-> 💡 macOS가 *"확인되지 않은 개발자"* 라며 막을 수 있어요. 그럴 땐 그냥 더블클릭 말고 **우클릭 → 열기 → (다시) 열기** 를 눌러주세요. 열어보고 안심하고 싶으면 `install.command`는 텍스트 파일이라 미리 열어 내용을 확인할 수 있습니다.
+**터미널** 앱(응용 프로그램 → 유틸리티 → 터미널)을 열고 아래를 붙여넣은 뒤 Enter:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/odiowood/hangul-oops/main/install.sh | bash
+```
+
+최신 버전을 받아 자동으로 설치합니다. (내용이 궁금하면 [install.sh](install.sh)를 먼저 열어볼 수 있어요.)
+
+#### 방법 B. 더블클릭 설치
+
+**[👉 `hangul-oops.zip` 바로 내려받기](https://github.com/odiowood/hangul-oops/releases/latest/download/hangul-oops.zip)** → 압축을 풀고 **`install.command`** 을 더블클릭.
+
+> ⚠️ macOS가 *"Apple이 install.command에 악성 코드가 없는지 확인할 수 없습니다"* 라며 막으면(서명 안 된 스크립트라 정상입니다):
+> **시스템 설정 → 개인정보 보호 및 보안** 을 열고 아래로 스크롤하면 *"install.command 이(가) 차단되었습니다"* 옆에 **[그래도 열기]** 버튼이 있습니다. → 누르고 → 암호/Touch ID → 다시 뜨는 창에서 **[열기]**.
+> (최신 macOS에서는 예전의 "우클릭 → 열기"가 더 이상 동작하지 않습니다.)
 
 ### 3. 권한 허용 (한 번만)
 
