@@ -36,27 +36,16 @@
 [hammerspoon.org](https://www.hammerspoon.org)에서 내려받아 `Hammerspoon.app`을 **응용 프로그램** 폴더로 옮기고 실행하세요.
 (Homebrew를 쓰신다면 `brew install --cask hammerspoon`)
 
-### 2. 한글 Oops 내려받기
+### 2. 한글 Oops 설치 (자동)
 
-**[👉 최신 릴리스에서 `HanEng.spoon.zip` 내려받기](https://github.com/odiowood/hangul-oops/releases/latest)**
+**[👉 최신 릴리스에서 `hangul-oops.zip` 내려받기](https://github.com/odiowood/hangul-oops/releases/latest)**
 
-내려받은 zip의 압축을 풀면 나오는 **`HanEng.spoon`** 폴더를 **더블클릭**하세요. Hammerspoon이 자동으로 설치합니다.
-(설치 위치: `~/.hammerspoon/Spoons/HanEng.spoon`)
+압축을 풀고 나온 폴더에서 **`install.command` 을 우클릭 → 열기**를 누르세요.
+스푼 복사와 설정을 **자동으로** 해줍니다. (init.lua를 직접 편집할 필요가 없습니다.)
 
-> 대신 이 페이지 위쪽 초록색 **`Code` → `Download ZIP`** 로 저장소 전체를 받아, 그 안의 `HanEng.spoon` 폴더를 더블클릭해도 됩니다.
+> 💡 macOS가 *"확인되지 않은 개발자"* 라며 막을 수 있어요. 그럴 땐 그냥 더블클릭 말고 **우클릭 → 열기 → (다시) 열기** 를 눌러주세요. 열어보고 안심하고 싶으면 `install.command`는 텍스트 파일이라 미리 열어 내용을 확인할 수 있습니다.
 
-### 3. 설정에 2줄 추가
-
-Hammerspoon 메뉴막대 아이콘 → **Open Config**를 눌러 `init.lua`를 열고, 아래 2줄을 붙여넣고 저장하세요.
-
-```lua
-hs.loadSpoon("HanEng")
-spoon.HanEng:bindHotkeys({ convert = { { "cmd", "shift" }, ";" } })
-```
-
-그다음 메뉴막대 아이콘 → **Reload Config**.
-
-### 4. 권한 허용 (한 번만)
+### 3. 권한 허용 (한 번만)
 
 키 입력을 대신 눌러주려면 **손쉬운 사용** 권한이 필요합니다.
 **시스템 설정 → 개인정보 보호 및 보안 → 손쉬운 사용**에서 **Hammerspoon**을 켜주세요.
@@ -72,9 +61,12 @@ spoon.HanEng:bindHotkeys({ convert = { { "cmd", "shift" }, ";" } })
 
 ### 단축키 바꾸기
 
-3단계에서 붙여넣은 줄의 마지막 부분을 원하는 조합으로 바꾸면 됩니다.
+Hammerspoon 메뉴막대 아이콘 → **Open Config** 로 `init.lua`를 열면, 설치 때 자동으로 추가된 아래 줄이 있습니다. 마지막 부분을 원하는 조합으로 바꾸고 저장한 뒤 **Reload Config** 하세요.
 
 ```lua
+-- 기본값
+spoon.HanEng:bindHotkeys({ convert = { { "cmd", "shift" }, ";" } })
+
 -- 예시: Cmd + Shift + \ 로 바꾸기
 spoon.HanEng:bindHotkeys({ convert = { { "cmd", "shift" }, "\\" } })
 
@@ -100,9 +92,23 @@ spoon.HanEng:bindHotkeys({ convert = { { "ctrl", "alt" }, "space" } })
 
 ## ❓ 문제 해결
 
-- **단축키를 눌러도 반응이 없어요** → 4단계 손쉬운 사용 권한을 켰는지, 켠 뒤 Hammerspoon을 재시작했는지 확인하세요.
+- **단축키를 눌러도 반응이 없어요** → 3단계 손쉬운 사용 권한을 켰는지, 켠 뒤 Hammerspoon을 재시작했는지 확인하세요.
 - **일부 앱에서 붙여넣기가 안 돼요** → 그 앱이 `Cmd+C` / `Cmd+V`를 지원하는지 확인하세요. (텍스트 선택·복사가 되는 앱이면 대부분 동작합니다.)
 - **단축키가 다른 앱 기능과 겹쳐요** → 위 "단축키 바꾸기"로 다른 조합을 지정하세요.
+
+---
+
+## 🛠 수동 설치 (고급)
+
+자동 설치 스크립트를 쓰지 않고 직접 설정하고 싶다면:
+
+1. `HanEng.spoon` 폴더를 더블클릭하거나 `~/.hammerspoon/Spoons/` 에 복사합니다.
+2. `~/.hammerspoon/init.lua` 에 아래 2줄을 추가하고 Hammerspoon을 **Reload Config** 합니다.
+
+```lua
+hs.loadSpoon("HanEng")
+spoon.HanEng:bindHotkeys({ convert = { { "cmd", "shift" }, ";" } })
+```
 
 ---
 
