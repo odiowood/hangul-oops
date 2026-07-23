@@ -110,6 +110,22 @@ spoon.HanEng:bindHotkeys({ convert = { { "cmd", "shift" }, ";" } })
 
 ---
 
+## 🔔 업데이트 알림
+
+새 버전이 나오면 **자동으로 알려드립니다.** 설치해두면 하루에 한 번 조용히 GitHub 최신 릴리스를 확인하고, 업데이트가 있을 때만 알림을 띄웁니다(클릭하면 다운로드 페이지로 이동). 지금 바로 확인하려면 메뉴바 `가A` → **업데이트 확인…** 을 누르세요.
+
+> GitHub 계정이 있다면 이 저장소 오른쪽 위 **Watch → Custom → Releases**를 켜두면 새 릴리스 때 이메일 알림도 받을 수 있습니다.
+
+---
+
+## 🗑 제거
+
+설치할 때 받은 폴더의 **`uninstall.command`** 를 **우클릭 → 열기** 하세요. 단축키·메뉴바 아이콘이 사라지고 관련 설정이 제거됩니다(기존의 다른 Hammerspoon 설정은 그대로 유지, 수정 전 백업 생성).
+
+수동으로 지우려면: `~/.hammerspoon/Spoons/HanEng.spoon` 폴더를 삭제하고, `~/.hammerspoon/init.lua`에서 `HanEng` 관련 두 줄을 지운 뒤 Hammerspoon을 **Reload Config** 하세요. Hammerspoon 앱까지 지우려면 응용 프로그램에서 휴지통으로 옮기면 됩니다.
+
+---
+
 ## 📄 라이선스
 
 MIT License · © 2026 odiowood

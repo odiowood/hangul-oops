@@ -10,7 +10,7 @@ local obj = {}
 obj.__index = obj
 
 obj.name = "HanEng"
-obj.version = "1.3"
+obj.version = "1.4"
 obj.author = "odiowood"
 obj.homepage = "https://github.com/odiowood/hangul-oops"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
@@ -325,8 +325,10 @@ function obj:_refreshMenu()
         { title = "단축키 바꾸기", menu = presetItems },
         { title = "직접 지정 (다음에 누르는 키로)…", fn = function() self:_recordHotkey() end },
         { title = "-" },
+        { title = "업데이트 확인…", fn = function() self:checkForUpdate(true, true) end },
         { title = "사용법 열기", fn = function() hs.execute("open https://github.com/odiowood/hangul-oops") end },
-        { title = "만든 사람: odiowood", disabled = true },
+        { title = "-" },
+        { title = "한글 Oops  v" .. obj.version .. "  · by odiowood", disabled = true },
     })
 end
 
@@ -355,6 +357,55 @@ function obj:_recordHotkey()
     self._recorder:start()
 end
 
+-- ─────────────────────────────────────────────────────────────────────
+-- 업데이트 확인 (하루 1회, GitHub 최신 릴리스와 버전 비교 후 새 버전이면 알림)
+-- ─────────────────────────────────────────────────────────────────────
+
+local LATEST_URL = "https://api.github.com/repos/odiowood/hangul-oops/releases/latest"
+local RELEASES_PAGE = "https://github.com/odiowood/hangul-oops/releases/latest"
+local CHECK_INTERVAL = 24 * 60 * 60     -- 24시간
+
+local function parseVer(v)
+    local t = {}
+    for n in v:gmatch("%d+") do t[#t + 1] = tonumber(n) end
+    return t
+end
+
+-- a가 b보다 새 버전이면 true
+local function isNewer(a, b)
+    local A, B = parseVer(a), parseVer(b)
+    for i = 1, math.max(#A, #B) do
+        local x, y = A[i] or 0, B[i] or 0
+        if x ~= y then return x > y end
+    end
+    return false
+end
+
+-- force=true면 주기 무시하고 즉시, verbose=true면 최신일 때도 알림
+function obj:checkForUpdate(force, verbose)
+    local last = hs.settings.get("HanEng.lastUpdateCheck") or 0
+    if not force and (os.time() - last) < CHECK_INTERVAL then return end
+    hs.settings.set("HanEng.lastUpdateCheck", os.time())
+    hs.http.asyncGet(LATEST_URL, { ["User-Agent"] = "HanEng-Spoon" }, function(status, body)
+        if status ~= 200 or not body then
+            if verbose then hs.alert.show("업데이트 확인 실패 (네트워크)", 1) end
+            return
+        end
+        local tag = body:match('"tag_name"%s*:%s*"([^"]+)"')
+        if not tag then return end
+        if isNewer(tag:gsub("^[vV]", ""), obj.version) then
+            hs.notify.new(function() hs.execute("open '" .. RELEASES_PAGE .. "'") end, {
+                title = "한글 Oops 업데이트 있음",
+                informativeText = "새 버전 " .. tag .. " 이 나왔어요. 클릭하면 다운로드 페이지가 열립니다.",
+                hasActionButton = true,
+                actionButtonTitle = "열기",
+            }):send()
+        elseif verbose then
+            hs.alert.show("이미 최신 버전이에요 (v" .. obj.version .. ")", 1.5)
+        end
+    end)
+end
+
 --- HanEng:bindHotkeys(mapping)
 --- Method
 --- 단축키 지정 + 메뉴바 아이콘 생성. 저장된 사용자 지정 단축키가 있으면 그것을 우선한다.
@@ -375,6 +426,8 @@ function obj:bindHotkeys(mapping)
     else
         self:_applyHotkey(defMods, defKey, false)
     end
+    -- 로드 시 조용히 업데이트 확인 (하루 1회)
+    hs.timer.doAfter(5, function() self:checkForUpdate(false, false) end)
     return self
 end
 
